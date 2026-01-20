@@ -58,8 +58,10 @@ npm install
 npm run dev
 Puis ouvre :
 👉 http://localhost:5173
+---
 
-🔁 Comment fonctionne le générateur (haut niveau)
+## 🔁 Comment fonctionne le générateur (haut niveau)
+
 1. Un seed est créé (ou fourni).
 2. Ce seed initialise un RNG déterministe (makeRng).
 3. Le générateur :
@@ -69,14 +71,18 @@ Puis ouvre :
 4. Un publicId est généré pour partager le build.
 5. Le même publicId peut être décodé pour rejouer exactement le même build.
 
-📦 À venir (roadmap)
+---
+
+## 📦 À venir (roadmap)
   UI moderne avec Tailwind
   Historique local + favoris
   Mode “Rejouer” propre (champ dédié au code)
   Support d’autres jeux (architecture prête)
     (Optionnel) Backend + stockage des builds publics
 
-🤝 Contribuer
+---
+
+## 🤝 Contribuer
 Toute contribution est bienvenue !
 Fork le repo
 Crée une branche : git checkout -b feature/ta-fonctionnalite
@@ -84,7 +90,9 @@ Commit : git commit -m "Add ta fonctionnalité"
 Push : git push origin feature/ta-fonctionnalite
 Ouvre une Pull Request
 
-📄 Licence
+---
+
+## 📄 Licence
 
 Projet personnel — usage libre pour apprentissage et fun.
 

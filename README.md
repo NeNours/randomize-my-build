@@ -53,7 +53,6 @@ weights.ts # Pondération des items
 
 ## ▶️ Lancer le projet en local
 
-```bash
 npm install
 npm run dev
 Puis ouvre :

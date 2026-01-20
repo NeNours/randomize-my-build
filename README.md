@@ -1,73 +1,92 @@
-# React + TypeScript + Vite
+# 🎲 Randomize My Build
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Un générateur de builds aléatoires (inspiré de League of Legends) construit avec **React + TypeScript**.  
+Le projet génère des builds **déterministes** : le même `seed` produit toujours le même résultat, ce qui permet de partager et rejouer des builds via un code (`publicId`).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Fonctionnalités (actuelles)
 
-## React Compiler
+- ✅ Génération de build aléatoire par **Champion / Rôle / Chaos**
+- ✅ Générateur **déterministe** basé sur un seed
+- ✅ Code partageable (`publicId`) pour rejouer un build
+- ✅ Preview du champion + rôle à partir du code
+- ✅ Architecture extensible (prévue pour supporter d’autres jeux plus tard)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+> ⚠️ MVP actuel : League of Legends uniquement.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Frontend
+- **React**
+- **TypeScript**
+- **Vite**
+- (UI de test basique pour l’instant — Tailwind prévu plus tard)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Core (moteur du générateur)
+- `rng.ts` → RNG déterministe (seeded random)
+- `codec.ts` → Encodage / décodage du `publicId`
+- `generator.ts` → Logique de génération du build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📁 Structure du projet (simplifiée)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+src/
+app/
+App.tsx # UI principale (test du générateur)
+lib/
+types.ts # Modèles de données
+rng.ts # RNG déterministe
+codec.ts # Encodage / décodage du publicId
+generator.ts # Moteur de génération du build
+games/
+lol/
+data.ts # Champions + items
+rules.ts # Règles (starter jungle/support, etc.)
+weights.ts # Pondération des items
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+---
+
+## ▶️ Lancer le projet en local
+
+```bash
+npm install
+npm run dev
+Puis ouvre :
+👉 http://localhost:5173
+
+🔁 Comment fonctionne le générateur (haut niveau)
+1. Un seed est créé (ou fourni).
+2. Ce seed initialise un RNG déterministe (makeRng).
+3. Le générateur :
+  -applique les règles (starter obligatoire pour Jungle/Support, max 1 boots),
+  -sélectionne les items avec pondération,
+  -construit un build de 6 items.
+4. Un publicId est généré pour partager le build.
+5. Le même publicId peut être décodé pour rejouer exactement le même build.
+
+📦 À venir (roadmap)
+  UI moderne avec Tailwind
+  Historique local + favoris
+  Mode “Rejouer” propre (champ dédié au code)
+  Support d’autres jeux (architecture prête)
+    (Optionnel) Backend + stockage des builds publics
+
+🤝 Contribuer
+Toute contribution est bienvenue !
+Fork le repo
+Crée une branche : git checkout -b feature/ta-fonctionnalite
+Commit : git commit -m "Add ta fonctionnalité"
+Push : git push origin feature/ta-fonctionnalite
+Ouvre une Pull Request
+
+📄 Licence
+
+Projet personnel — usage libre pour apprentissage et fun.
+
+
+---

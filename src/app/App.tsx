@@ -31,11 +31,15 @@ export default function App() {
   }, []);
 
   // Build courant (Create)
-  const currentBuild = useMemo(() => {
-    return generateBuild({ gameId: "lol", championId, role, chaos });
-  }, [championId, role, chaos]);
+  const [currentBuild, setCurrentBuild] = useState<BuildResult | null>(null);
 
+  // Génère un build seulement quand l'utilisateur clique
+  function handleGenerate() {
+    const b = generateBuild({ gameId: "lol", championId, role, chaos });
+    setCurrentBuild(b);
+  }
   function handleSaveCurrent() {
+    if (!currentBuild) return;
     setHistory(addToHistory(currentBuild));
   }
 
@@ -75,7 +79,7 @@ export default function App() {
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
             <label>
               Champion{" "}
-              <select value={championId} onChange={(e) => setChampionId(e.target.value)}>
+              <select value={championId} onChange={(e) => { setChampionId(e.target.value); setCurrentBuild(null); }}>
                 {LOL_CHAMPIONS.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -99,38 +103,75 @@ export default function App() {
               <input type="checkbox" checked={chaos} onChange={(e) => setChaos(e.target.checked)} /> Chaos
             </label>
 
-            <button onClick={handleSaveCurrent} style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" }}>
+            <button
+              onClick={handleGenerate}
+              style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" }}
+            >
+              Générer
+            </button>
+
+
+            <button
+              onClick={handleSaveCurrent}
+              disabled={!currentBuild}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid #ddd",
+                opacity: currentBuild ? 1 : 0.5,
+                cursor: currentBuild ? "pointer" : "not-allowed",
+              }}
+            >
               Sauvegarder
             </button>
 
-            <button onClick={() => handleShare(currentBuild)} style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" }}>
+
+            <button
+              onClick={() => currentBuild && handleShare(currentBuild)}
+              disabled={!currentBuild}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid #ddd",
+                opacity: currentBuild ? 1 : 0.5,
+                cursor: currentBuild ? "pointer" : "not-allowed",
+              }}
+            >
               Share
             </button>
           </div>
 
-          <div style={{ border: "1px solid #e5e5e5", borderRadius: 12, padding: 16 }}>
-            <div style={{ marginBottom: 6 }}>
-              <b>
-                {currentBuild.championName} — {currentBuild.role} {currentBuild.chaos ? "(Chaos)" : ""}
-              </b>
+          {!currentBuild ? (
+            <div style={{ border: "1px dashed #ccc", borderRadius: 12, padding: 16, opacity: 0.8 }}>
+              Aucun build généré. Choisis tes options puis clique sur <b>Générer</b>.
             </div>
-            <div style={{ fontSize: 14, opacity: 0.8 }}>
-              Seed: {currentBuild.seed}
-              <br />
-              Code: {currentBuild.publicId}{" "}
-              <button onClick={() => handleCopyCode(currentBuild)} style={{ marginLeft: 8 }}>
-                Copier
-              </button>
-            </div>
+          ) : (
+            <div style={{ border: "1px solid #e5e5e5", borderRadius: 12, padding: 16 }}>
+              <div style={{ marginBottom: 6 }}>
+                <b>
+                  {currentBuild.championName} — {currentBuild.role} {currentBuild.chaos ? "(Chaos)" : ""}
+                </b>
+              </div>
 
-            <ol style={{ marginTop: 12 }}>
-              {currentBuild.items.map((it) => (
-                <li key={it.id}>
-                  {it.name} <small style={{ opacity: 0.7 }}>({it.kind})</small>
-                </li>
-              ))}
-            </ol>
-          </div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Seed: {currentBuild.seed}
+                <br />
+                Code: {currentBuild.publicId}{" "}
+                <button onClick={() => handleCopyCode(currentBuild)} style={{ marginLeft: 8 }}>
+                  Copier
+                </button>
+              </div>
+
+              <ol style={{ marginTop: 12 }}>
+                {currentBuild.items.map((it) => (
+                  <li key={it.id}>
+                    {it.name} <small style={{ opacity: 0.7 }}>({it.kind})</small>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
         </div>
       )}
 
